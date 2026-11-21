@@ -78,32 +78,33 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d1520] p-8 text-white">
-      <div className="mx-auto max-w-2xl">
-        <h1 className="text-3xl font-bold">GitHub Profile Finder</h1>
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#0d1520] px-4 py-6 text-white sm:px-6 sm:py-10 lg:py-12">
+      <div className="mx-auto w-full max-w-2xl lg:max-w-4xl">
+        <h1 className="text-2xl font-bold sm:text-3xl lg:text-4xl">GitHub Profile Finder</h1>
         <p className="mt-1 text-sm text-slate-400">
           Search any GitHub user to see their profile and latest repositories.
         </p>
 
+        {/* الفورم: عمودي على الموبايل، أفقي من التابلت */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
             search(input);
           }}
-          className="mt-5 flex gap-3"
+          className="mt-5 flex flex-col gap-3 sm:flex-row"
         >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Enter a GitHub username..."
-            className="flex-1 rounded-xl border-2 border-yellow-400 bg-[#16212e] px-4 py-3 outline-none"
+            className="min-w-0 flex-1 rounded-xl border-2 border-yellow-400 bg-[#16212e] px-4 py-3 outline-none"
           />
-          <button className="rounded-xl bg-yellow-400 px-6 font-bold text-black hover:bg-yellow-300">
+          <button className="rounded-xl bg-yellow-400 px-6 py-3 font-bold text-black hover:bg-yellow-300">
             Search
           </button>
         </form>
 
-        <div className="mt-4 flex items-center gap-2 text-xs text-blue-300">
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-blue-300">
           <span>Try:</span>
           {TRY.map((n) => (
             <button
@@ -128,15 +129,17 @@ export default function App() {
         {/* كارت البروفايل (فوق القايمة) */}
         {loadingProfile && <p className="mt-6 text-slate-400">Loading profile...</p>}
         {profile && (
-          <div className="mt-6 rounded-2xl border border-slate-700 bg-[#16212e] p-5">
-            <div className="flex items-center gap-4">
+          <div className="mt-6 rounded-2xl border border-slate-700 bg-[#16212e] p-4 sm:p-5">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
               <img
                 src={profile.avatar_url}
                 alt=""
-                className="h-20 w-20 rounded-full border-2 border-yellow-400"
+                className="h-20 w-20 shrink-0 rounded-full border-2 border-yellow-400 sm:h-24 sm:w-24"
               />
-              <div>
-                <h2 className="text-xl font-bold">{profile.name || profile.login}</h2>
+              <div className="min-w-0">
+                <h2 className="break-words text-xl font-bold sm:text-2xl">
+                  {profile.name || profile.login}
+                </h2>
                 <a
                   href={profile.html_url}
                   target="_blank"
@@ -145,7 +148,9 @@ export default function App() {
                 >
                   @{profile.login}
                 </a>
-                {profile.bio && <p className="mt-1 text-sm text-slate-300">{profile.bio}</p>}
+                {profile.bio && (
+                  <p className="mt-1 break-words text-sm text-slate-300">{profile.bio}</p>
+                )}
                 <p className="mt-1 text-sm text-slate-400">
                   {profile.public_repos} repos · {profile.followers} followers ·{" "}
                   {profile.following} following
@@ -157,18 +162,21 @@ export default function App() {
             {repos.length === 0 ? (
               <p className="text-sm text-slate-500">No public repositories.</p>
             ) : (
-              <ul className="space-y-2">
+              <ul className="grid gap-2 lg:grid-cols-2">
                 {repos.map((r) => (
-                  <li key={r.id} className="rounded-xl border border-slate-700 bg-[#0d1520] p-3">
+                  <li
+                    key={r.id}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-slate-700 bg-[#0d1520] p-3"
+                  >
                     <a
                       href={r.html_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-semibold text-blue-300 hover:underline"
+                      className="min-w-0 truncate font-semibold text-blue-300 hover:underline"
                     >
                       {r.name}
                     </a>
-                    <span className="ml-3 text-xs text-slate-500">⭐ {r.stargazers_count}</span>
+                    <span className="shrink-0 text-xs text-slate-500">⭐ {r.stargazers_count}</span>
                   </li>
                 ))}
               </ul>
@@ -176,14 +184,14 @@ export default function App() {
           </div>
         )}
 
-        {/* ليست الـ 20 أكونت */}
+        {/* ليست الـ 20 أكونت: 1 عمود موبايل، 2 تابلت، 3 لاب */}
         {searching && <p className="mt-6 text-slate-400">Searching...</p>}
         {!searching && query && !error && users.length === 0 && (
           <p dir="rtl" className="mt-6 text-slate-400">
             مفيش نتايج للاسم ده.
           </p>
         )}
-        <ul className="mt-5 grid gap-2 sm:grid-cols-2">
+        <ul className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {users.map((u) => (
             <li key={u.id}>
               <button
@@ -192,8 +200,8 @@ export default function App() {
                   selected === u.login ? "border-yellow-400" : "border-slate-700"
                 }`}
               >
-                <img src={u.avatar_url} alt="" className="h-9 w-9 rounded-full" />
-                <span className="truncate text-blue-300">{u.login}</span>
+                <img src={u.avatar_url} alt="" className="h-9 w-9 shrink-0 rounded-full" />
+                <span className="min-w-0 truncate text-blue-300">{u.login}</span>
               </button>
             </li>
           ))}
